@@ -2,12 +2,13 @@
 //! Modelos de dados e estruturas de configuração para o BFG Repo Cleaner Native.
 
 use git2::Oid;
+use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::PathBuf;
 
 /// Execution options passed to the BFG Engine.
 /// Opções de execução passadas ao motor do BFG.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CleanerOptions {
     /// Path to the target Git repository / Caminho do repositório Git alvo
     pub repo_path: PathBuf,
@@ -24,13 +25,14 @@ pub struct CleanerOptions {
     /// Whether to disable default protection of the latest revision / Desativar proteção de blobs no HEAD
     pub no_blob_protection: bool,
     /// Optional set of specific Object IDs to strip / OIDs específicos a remover
+    #[serde(skip)]
     pub strip_blobs_with_ids: Option<HashSet<Oid>>,
 }
 
 /// Statistics and metrics collected after completing repository cleaning.
 /// Estatísticas e métricas coletadas após a execução da limpeza no repositório.
 #[allow(dead_code)]
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ExecutionSummary {
     /// Total number of Git blobs scanned / Total de blobs escaneados
     pub total_blobs_scanned: usize,
@@ -47,3 +49,4 @@ pub struct ExecutionSummary {
     /// Total execution duration in milliseconds / Duração da execução em milissegundos
     pub execution_time_ms: u128,
 }
+

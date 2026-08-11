@@ -345,6 +345,7 @@ dependencies = [
  "git2",
  "regex",
  "serde",
+ "serde_json",
 ]
 
 [[package]]

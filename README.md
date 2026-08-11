@@ -25,6 +25,7 @@ O **BFG Repo Cleaner Native** é uma ferramenta de alta performance desenvolvida
 - 🛡️ **HEAD Protection**: Protects blobs present in the latest commit (`HEAD`) by default to prevent accidental breakage of current working state.
 - 🔍 **Automatic Repository Detection**: Detects if executed inside a valid Git repository or prompts interactively.
 - 💻 **Flexible CLI Interface**: Full command-line argument support powered by `clap`.
+- 🖥️ **Cross-Platform Desktop GUI**: Sleek glassmorphism dark theme UI built with Tauri v2 (supporting Linux, Windows & macOS).
 
 ---
 
@@ -124,6 +125,24 @@ git push origin --force --tags
 
 ---
 
+## 🖥️ Cross-Platform GUI / Interface Gráfica Multiplataforma
+
+**BFG Repo Cleaner Native** includes a modern desktop GUI built with **Tauri v2** (Rust core + Web front-end).
+
+### Running the Desktop GUI
+
+```bash
+# Start GUI in development mode
+pnpm run dev  # (or npm run dev / npx tauri dev)
+
+# Build cross-platform release packages (.deb, .rpm)
+pnpm run build # (or npm run build)
+```
+
+The GUI provides native OS file pickers, real-time repository validation, visual configuration for file sizes and regex secret scrubbing, HEAD protection toggles, and live execution metric dashboards.
+
+---
+
 ## 🏗️ Architecture & Project Structure
 
 ```
@@ -132,12 +151,24 @@ bfg-repo-cleaner-native/
 │   └── workflows/
 │       └── ci.yml          # GitHub Actions CI workflow (Check, Test, Clippy, Format)
 ├── src/
-│   ├── main.rs             # Application entrypoint, banner logging & colored summary
+│   ├── main.rs             # CLI Binary entrypoint, banner logging & summary
+│   ├── lib.rs              # Core library crate
 │   ├── cli.rs              # CLI parser (`clap`) with colored styles & path resolution
 │   ├── engine.rs           # Git ODB scanner & topological history rewriter
 │   ├── filter.rs           # Glob file matching & Regex content redactor
 │   └── models.rs           # Data structures (`CleanerOptions`, `ExecutionSummary`)
-├── Cargo.toml              # Package configuration & metadata
+├── src-tauri/              # Cross-platform Desktop GUI Crate (Tauri v2)
+│   ├── src/
+│   │   ├── lib.rs          # Tauri IPC commands (validate repo, run cleaner, file dialog)
+│   │   └── main.rs         # Desktop GUI app entry point
+│   ├── tauri.conf.json     # Tauri app configuration
+│   └── Cargo.toml          # GUI crate manifest
+├── ui/                     # Web Frontend for Desktop GUI
+│   ├── index.html          # GUI Interface template
+│   ├── style.css           # Glassmorphism dark-theme stylesheet
+│   └── app.js              # Interactivity & Tauri IPC bindings
+├── Cargo.toml              # Workspace package configuration & metadata
+├── package.json            # Node scripts for Tauri dev/build
 ├── LICENSE                 # GNU General Public License v3.0 (GPLv3)
 └── README.md               # Project documentation
 ```

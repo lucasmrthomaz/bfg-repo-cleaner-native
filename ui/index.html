@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BFG Repo Cleaner Native ⚡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-text">
+          <h1>BFG Repo Cleaner <span class="badge-tag">NATIVE RUST</span></h1>
+          <p>Scrub secrets, remove large files & clean Git repository history</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="engine-badge">
+          <span class="dot-online"></span> Rust Engine v0.1.0
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="main-content">
+      <!-- Section 1: Repository Selection -->
+      <section class="card repo-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📂</span>
+            <h2>Target Git Repository / Repositório Git Alvo</h2>
+          </div>
+        </div>
+        <div class="repo-input-group">
+          <div class="input-wrapper">
+            <input type="text" id="repo-path-input" placeholder="Select or paste path to Git repository (e.g., /path/to/my-repo.git)" />
+          </div>
+          <button id="btn-browse" class="btn btn-secondary">
+            <span class="icon">📁</span> Browse...
+          </button>
+        </div>
+        <div id="repo-status" class="repo-status status-idle">
+          <span class="status-icon">ℹ️</span>
+          <span id="repo-status-text">Select a repository directory to analyze.</span>
+        </div>
+      </section>
+
+      <!-- Section 2: Cleaning Configurations Grid -->
+      <section class="config-grid">
+        <!-- Card 1: Large Files -->
+        <div class="card config-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📏</span>
+              <h3>Large File Removal</h3>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-max-size" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <p class="card-desc">Strip blobs larger than the specified threshold from Git history.</p>
+          <div class="field-group" id="group-max-size">
+            <label for="max-size-input">Max File Size (Megabytes / MB):</label>
+            <div class="input-unit">
+              <input type="number" id="max-size-input" value="10" min="1" max="10000" />
+              <span class="unit">MB</span>
+            </div>
+            <div class="preset-pills">
+              <button class="pill" data-size="1">1 MB</button>
+              <button class="pill active" data-size="10">10 MB</button>
+              <button class="pill" data-size="50">50 MB</button>
+              <button class="pill" data-size="100">100 MB</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Delete Files & Folders -->
+        <div class="card config-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🗑️</span>
+              <h3>File & Folder Deletion</h3>
+            </div>
+          </div>
+          <p class="card-desc">Purge files or entire directories matching glob patterns across all commits.</p>
+          <div class="field-group">
+            <label for="delete-files-input">Delete Files Glob Pattern:</label>
+            <input type="text" id="delete-files-input" placeholder="e.g. *.zip, passwords.txt, *.p12" />
+          </div>
+          <div class="field-group">
+            <label for="delete-folders-input">Delete Folders Glob Pattern:</label>
+            <input type="text" id="delete-folders-input" placeholder="e.g. node_modules, .svn, build, target" />
+          </div>
+        </div>
+
+        <!-- Card 3: Secret Scrubbing -->
+        <div class="card config-card full-width">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🔒</span>
+              <h3>Secret Scrubbing (Regex Redaction)</h3>
+            </div>
+          </div>
+          <p class="card-desc">Scan file contents in Git history and replace secret matches with <code>***REDACTED***</code>.</p>
+          <div class="field-group">
+            <label for="regex-input">Regular Expression Pattern:</label>
+            <input type="text" id="regex-input" class="mono" placeholder="e.g. (AKIA[0-9A-Z]{16}) or (ghp_[a-zA-Z0-9]{36})" />
+          </div>
+          <div class="presets-row">
+            <span class="label">Quick Secret Presets:</span>
+            <button class="btn-preset" data-regex="AKIA[0-9A-Z]{16}">🔑 AWS Access Key</button>
+            <button class="btn-preset" data-regex="ghp_[a-zA-Z0-9]{36}">🐙 GitHub Personal Token</button>
+            <button class="btn-preset" data-regex="-----BEGIN RSA PRIVATE KEY-----">🔐 RSA Private Key</button>
+            <button class="btn-preset" data-regex="(?i)(api_key|secret_key)\s*[:=]\s*['&quot;][a-zA-Z0-9_\-]+['&quot;]">🌐 Generic API Key</button>
+          </div>
+        </div>
+
+        <!-- Card 4: Revision Protection -->
+        <div class="card config-card full-width">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🛡️</span>
+              <h3>Git Revision Protection</h3>
+            </div>
+          </div>
+          <div class="protection-options">
+            <label class="checkbox-label">
+              <input type="checkbox" id="check-protect-head" checked />
+              <span>Protect HEAD commit blobs (Recommended: preserves files currently active in HEAD)</span>
+            </label>
+            <div class="field-group" style="margin-top: 12px;">
+              <label for="protect-refs-input">Protected References (Comma separated):</label>
+              <input type="text" id="protect-refs-input" value="HEAD" placeholder="HEAD, main, master, v1.0.0" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Action Panel -->
+      <section class="action-panel">
+        <button id="btn-execute" class="btn btn-primary btn-large" disabled>
+          <span class="icon">⚡</span> Run BFG Repo Cleaner
+        </button>
+      </section>
+
+      <!-- Results & Metrics Modal/Section -->
+      <section id="results-section" class="card results-card hidden">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📊</span>
+            <h2>Execution Summary / Resumo de Execução</h2>
+          </div>
+          <button id="btn-close-results" class="btn-icon">✖</button>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-box green">
+            <div class="metric-icon">🔍</div>
+            <div class="metric-value" id="res-blobs-scanned">0</div>
+            <div class="metric-label">Blobs Scanned</div>
+          </div>
+          <div class="metric-box red">
+            <div class="metric-icon">🔥</div>
+            <div class="metric-value" id="res-blobs-removed">0</div>
+            <div class="metric-label">Blobs Stripped</div>
+          </div>
+          <div class="metric-box magenta">
+            <div class="metric-icon">🔒</div>
+            <div class="metric-value" id="res-secrets-redacted">0</div>
+            <div class="metric-label">Secrets Redacted</div>
+          </div>
+          <div class="metric-box cyan">
+            <div class="metric-icon">📜</div>
+            <div class="metric-value" id="res-commits-rewritten">0</div>
+            <div class="metric-label">Commits Rewritten</div>
+          </div>
+          <div class="metric-box blue">
+            <div class="metric-icon">🌳</div>
+            <div class="metric-value" id="res-trees-rewritten">0</div>
+            <div class="metric-label">Trees Rewritten</div>
+          </div>
+          <div class="metric-box purple">
+            <div class="metric-icon">🏷️</div>
+            <div class="metric-value" id="res-refs-updated">0</div>
+            <div class="metric-label">Refs Updated</div>
+          </div>
+        </div>
+        <div class="execution-footer">
+          <div class="exec-time">⏱️ Total Execution Time: <strong id="res-exec-time">0 ms</strong></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Confirmation Safety Modal -->
+    <div id="confirm-modal" class="modal-backdrop hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>⚠️ Confirm Git History Cleaning</h3>
+        </div>
+        <div class="modal-body">
+          <p>You are about to rewrite the Git history for repository:</p>
+          <div class="repo-highlight" id="modal-repo-path">/path/to/repo</div>
+          <p class="warning-note">
+            <strong>Warning:</strong> This operation rewrites commit SHAs and modifies references.
+            Ensure you have a backup or a clean working tree before proceeding.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-cancel-modal" class="btn btn-secondary">Cancel</button>
+          <button id="btn-confirm-execute" class="btn btn-danger">Yes, Clean Repository</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spinner Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="spinner-container">
+        <div class="spinner"></div>
+        <p id="loading-text">Cleaning Git history with native Rust engine...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

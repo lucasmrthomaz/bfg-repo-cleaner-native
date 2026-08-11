@@ -1,0 +1,13 @@
+{
+  "name": "bfg-repo-cleaner-gui",
+  "version": "0.1.0",
+  "description": "Cross-platform GUI for BFG Repo Cleaner Native",
+  "scripts": {
+    "tauri": "npx @tauri-apps/cli",
+    "dev": "npx @tauri-apps/cli dev",
+    "build": "npx @tauri-apps/cli build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4"
+  }
+}

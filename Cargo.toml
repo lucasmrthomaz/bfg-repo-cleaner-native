@@ -2,13 +2,21 @@
 name = "bfg-repo-cleaner-native"
 version = "0.1.0"
 edition = "2024"
-authors = ["Lucas M. R. Thomaz <lucasmrthomaz@gmail.com>", "Roberto Tyley <https://github.com/rtyley>"]
+authors = ["Lucas M. R. Thomaz <lucasmrthomaz@gmail.com>", "Roberto Tyley"]
 description = "A fast, native Rust implementation of the BFG Repo Cleaner for scrubbing secrets and large files from Git history."
 readme = "README.md"
 repository = "https://github.com/lucasmrthomaz/bfg-repo-cleaner-thz"
 license = "GPL-3.0-or-later"
 keywords = ["git", "bfg", "repo-cleaner", "security", "git-history"]
 categories = ["command-line-utilities", "development-tools"]
+
+[lib]
+name = "bfg_repo_cleaner_native"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bfg-repo-cleaner-native"
+path = "src/main.rs"
 
 [dependencies]
 # Git ODB operations / Operações Git ODB
@@ -25,3 +33,11 @@ colored = "2.1"
 
 # Error handling / Tratamento de erros
 anyhow = "1.0"
+
+# Serialization for GUI IPC
+serde = { version = "1.0", features = ["derive"] }
+# Workspace configuration
+[workspace]
+members = [".", "src-tauri"]
+
+
