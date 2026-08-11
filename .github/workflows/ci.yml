@@ -1,24 +1,42 @@
-name: CI
-on:
-  workflow_dispatch:
-  pull_request:
+name: Rust CI
 
-  # triggering CI default branch improves caching
-  # see https://docs.github.com/en/free-pro-team@latest/actions/guides/caching-dependencies-to-speed-up-workflows#restrictions-for-accessing-a-cache
+on:
   push:
-    branches:
-      - main
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
-  test:
+  build:
+    name: Build & Test
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: guardian/setup-scala@v1
-      - name: Build and Test
-        run: sbt -v test
-      - name: Test Summary
-        uses: test-summary/action@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          paths: "test-results/**/TEST-*.xml"
-        if: always()
+          components: clippy, rustfmt
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check Code
+        run: cargo check --verbose
+
+      - name: Check Formatting
+        run: cargo fmt --check
+
+      - name: Run Clippy Linter
+        run: cargo clippy -- -D warnings
+
+      - name: Run Unit Tests
+        run: cargo test --verbose
+
+      - name: Build Release Binary
+        run: cargo build --release --verbose

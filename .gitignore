@@ -1,14 +1,25 @@
-target
-*~
-.idea
-.idea_modules
-*.iml
-*.jar
-repo.git.zip
-**/.project
-**/.classpath
-**/.settings
-.bsp
+# Rust Target directory / Build artifacts
+/target
+Cargo.lock.min
 
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 .DS_Store
-test-results/
+
+# Temporary & Log files
+*.log
+tmp/
+temp/
+*.tmp
+
+# IDE specific files or Agentic AI
+.agent
+.cursor
+.cursorrules
+.idea
+
+
