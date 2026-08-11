@@ -1,5 +1,9 @@
 # BFG Repo Cleaner Native
 
+<center>
+<img width="350" height="350" alt="app_icon_1786482329102" src="https://github.com/user-attachments/assets/6a86a184-e5a2-4016-b9aa-a98b92fc2168" />  
+</center>
+
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Rust Edition](https://img.shields.io/badge/Rust-2024-orange.svg)](https://www.rust-lang.org/)
 
