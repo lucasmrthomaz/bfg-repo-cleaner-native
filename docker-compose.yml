@@ -1,0 +1,9 @@
+services:
+  cleaner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bfg-repo-cleaner
+    volumes:
+      - .:/repo
+    command: ["--help"]
